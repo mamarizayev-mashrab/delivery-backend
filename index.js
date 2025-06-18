@@ -1,30 +1,40 @@
 import express from "express";
 import cors from "cors";
-import { connectDB } from "../config/db.js";
-import foodRouter from "../routes/foodRoute.js";
-import userRouter from "../routes/userRoute.js";
-import cartRouter from "../routes/cartRoute.js";
-import orderRouter from "../routes/orderRoute.js";
+import { connectDB } from "./config/db.js"; // joylashuvga qarab tuzating
+import foodRouter from "./routes/foodRoute.js";
+import userRouter from "./routes/userRoute.js";
+import cartRouter from "./routes/cartRoute.js";
+import orderRouter from "./routes/orderRoute.js";
+import dotenv from "dotenv";
 
-// app config
+// .env faylni o‘qish
+dotenv.config();
+
 const app = express();
+const port = process.env.PORT || 4000;
 
-// middleware
+// Middleware
 app.use(express.json());
 app.use(cors());
 
-// db connection
+// Static fayllar
+app.use("/images", express.static("uploads"));
+
+// DB ulanish
 connectDB();
 
-// api endpoints
+// Routes
 app.use("/api/food", foodRouter);
-app.use("/images", express.static("uploads"));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 
+// Test route
 app.get("/", (req, res) => {
-    res.send("API Working");
+  res.send("API is working on Render!");
 });
 
-export default app; // ❗️Vercel uchun shart
+// 🚀 Render uchun kerak: serverni ishga tushirish
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
